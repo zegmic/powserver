@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/zegmic/powserver/pkg/challange"
 	"github.com/zegmic/powserver/pkg/db"
+	"github.com/zegmic/powserver/pkg/quotes"
 	"github.com/zegmic/powserver/pkg/server"
 	"net"
 	"strings"
@@ -72,7 +73,7 @@ func runServer() (int, chan interface{}) {
 	startup := make(chan interface{})
 	shutdown := make(chan interface{})
 
-	s := server.NewServer(&challange.Empty{}, db.New(), 0, shutdown)
+	s := server.NewServer(&challange.Empty{}, db.New(), quotes.Single{}, 0, shutdown)
 	go s.Start(startup)
 	<-startup
 

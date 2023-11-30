@@ -19,15 +19,20 @@ type DB interface {
 	Delete(key string)
 }
 
+type Quotes interface {
+	Quote() string
+}
+
 type Server struct {
 	challlenger Challenger
 	db          DB
+	quotes      Quotes
 	port        int
 	shutdown    <-chan interface{}
 }
 
-func NewServer(challenger Challenger, db DB, port int, shutdown <-chan interface{}) Server {
-	return Server{challlenger: challenger, db: db, port: port, shutdown: shutdown}
+func NewServer(challenger Challenger, db DB, quotes Quotes, port int, shutdown <-chan interface{}) Server {
+	return Server{challlenger: challenger, db: db, quotes: quotes, port: port, shutdown: shutdown}
 }
 
 func (s *Server) Start(startup chan interface{}) {
@@ -119,7 +124,7 @@ func (s *Server) solve(conn net.Conn, answer string) {
 	}
 
 	s.db.Delete(answer)
-	_, err = conn.Write([]byte("YEAAAAAAH!!!!"))
+	_, err = conn.Write([]byte(s.quotes.Quote()))
 	if err != nil {
 		log.Println(err)
 	}
