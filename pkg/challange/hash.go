@@ -16,10 +16,17 @@ import (
 )
 
 type Hash struct {
+	now int64
 }
 
-func (e *Hash) Create() string {
-	now := time.Now().UnixMilli()
+func (h *Hash) Create() string {
+	var now int64
+	if h.now == 0 {
+		now = time.Now().UnixMilli()
+	} else {
+		now = h.now
+	}
+
 	nowStr := strconv.FormatInt(now+1000*30, 10)
 	nowBase := base64.StdEncoding.EncodeToString([]byte(nowStr))
 
@@ -33,7 +40,7 @@ func (e *Hash) Create() string {
 	return fmt.Sprintf("%s.%s.%s", numBase, nowBase, signBase)
 }
 
-func (e *Hash) Verify(challenge string, solution int) bool {
+func (h *Hash) Verify(challenge string, solution int) bool {
 	parts := strings.Split(challenge, ".")
 	if len(parts) != 3 {
 		return false
@@ -53,6 +60,10 @@ func (e *Hash) Verify(challenge string, solution int) bool {
 	sum := dig.Sum(nil)
 
 	return verify(sum)
+}
+
+func (h *Hash) SetNow(ts int64) {
+	h.now = ts
 }
 
 func verify(sum []byte) bool {
