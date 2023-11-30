@@ -8,6 +8,7 @@ import (
 	"encoding/base64"
 	"encoding/hex"
 	"fmt"
+	"math"
 	"math/big"
 	"os"
 	"strconv"
@@ -27,10 +28,11 @@ func (h *Hash) Create() string {
 		now = h.now
 	}
 
-	nowStr := strconv.FormatInt(now+1000*30, 10)
+	thirtySeconds := int64(1000 * 30)
+	nowStr := strconv.FormatInt(now+thirtySeconds, 10)
 	nowBase := base64.StdEncoding.EncodeToString([]byte(nowStr))
 
-	n, _ := rand.Int(rand.Reader, big.NewInt(10000000000))
+	n, _ := rand.Int(rand.Reader, big.NewInt(math.MaxInt))
 	numBase := base64.StdEncoding.EncodeToString([]byte(n.String()))
 
 	challengeToSign := fmt.Sprintf("%s.%s", numBase, nowBase)

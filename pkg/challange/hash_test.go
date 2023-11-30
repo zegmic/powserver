@@ -5,6 +5,7 @@ import (
 	"encoding/hex"
 	"fmt"
 	"github.com/zegmic/powserver/pkg/challange"
+	"math"
 	"strings"
 	"testing"
 	"time"
@@ -55,7 +56,7 @@ func TestVerifyValidSolution(t *testing.T) {
 }
 
 func solve(challenge string) int {
-	for i := 0; i < 1000000000; i++ {
+	for i := 0; i < math.MaxInt; i++ {
 		sol := fmt.Sprintf("%d.%s", i, challenge)
 		dig := sha256.New()
 		dig.Write([]byte(sol))
