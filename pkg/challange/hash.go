@@ -9,6 +9,7 @@ import (
 	"encoding/hex"
 	"fmt"
 	"math/big"
+	"os"
 	"strconv"
 	"strings"
 	"time"
@@ -86,8 +87,8 @@ func validSignature(challenge string) bool {
 
 func sign(val string) string {
 	secretHash := md5.New()
-	// in a real system it should be e.g. env var
-	secretHash.Write([]byte("s3cr37"))
+	secret := os.Getenv("SECRET")
+	secretHash.Write([]byte(secret))
 	key := secretHash.Sum(nil)
 
 	sig := hmac.New(sha256.New, key)
